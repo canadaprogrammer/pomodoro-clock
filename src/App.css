@@ -1,33 +1,31 @@
+@font-face {
+  font-family: 'digital';
+  src: url('./fonts/digital-7.ttf');
+}
+
 .App {
   text-align: center;
+  width: 30rem;
+  margin: auto;
+  height: 50%;
+  font-weight: bold;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+.length {
+  width: 50%;
+  display: inline-block;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.length, #timer-label  {
+  font-size: 1.5rem;
 }
 
-.App-link {
-  color: #61dafb;
+#time-left {
+  font-family: 'digital';
+  font-size: 4rem;
+  font-weight: normal;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.buttons {
+  margin-top: 2rem;
 }

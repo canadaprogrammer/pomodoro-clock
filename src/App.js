@@ -14,21 +14,64 @@ class App extends React.Component {
       startTime: 25,
       time: 25 * 60 * 1000,
       current: Date.now(),
-      isOn: false,
+      on: 'session',
       isPlay: false
     }
     this.startTimer = this.startTimer.bind(this);
+    this.breakDec = this.breakDec.bind(this);
+    this.breakInc = this.breakInc.bind(this);
+    this.sessionDec = this.sessionDec.bind(this);
+    this.sessionInc = this.sessionInc.bind(this);
+  }
+  breakDec() {
+    if (this.state.break > 1) {
+      this.setState({
+        break: this.state.break - 1
+      });
+    } else {
+      console.log('Break is allowed greater than 0 minute');
+    }
+  }
+  breakInc() {
+    if (this.state.break < 60) {
+      this.setState({
+        break: this.state.break + 1
+      });
+    } else {
+      console.log('Break is allowed less than an hour');
+    }
+  }
+  sessionDec() {
+    if (this.state.session > 1) {
+      this.setState({
+        session: this.state.session - 1,
+        startTime: this.state.session - 1,
+        time: (this.state.session - 1) * 60 * 1000
+      });
+    } else {
+      console.log('Session is allowed greater than 0 minute');
+    }
+  }
+  sessionInc() {
+    if (this.state.session < 60) {
+      this.setState({
+        session: this.state.session + 1,
+        startTime: this.state.session + 1,
+        time: (this.state.session + 1) * 60 * 1000
+      });
+    } else {
+      console.log('Session is allowed less than an hour');
+    }
   }
 
   startTimer() {
+    console.log('on: ' + this.state.on);
     this.setState({
       current: Date.now(),
       isPlay: !this.state.isPlay
-    })
-    
+    });
     if (this.state.startTime === this.state.session) {
       this.setState({
-        isOn: !this.state.isOn,
         startTime: this.state.session * 60 * 1000
       });
     }
@@ -49,6 +92,23 @@ class App extends React.Component {
       clearInterval(this.timer);
     }
   }
+
+  componentDidUpdate() {
+    if (this.state.time <= 0 && this.state.isPlay) {
+      console.log('times up');
+      if (this.state.on === 'session') {
+        this.setState({
+          on: 'break'
+        });
+        this.startTimer();
+      } else {
+        this.setState({
+          on: 'session'
+        });
+        this.startTimer();
+      }
+    }
+  }
   render() {
     const iconStyle = {
       margin: "0 0.5rem"
@@ -62,15 +122,15 @@ class App extends React.Component {
           <div className="length-wrap">
             <div className="length">
               <p id="break-label">Break Length</p>
-              <FontAwesomeIcon id="break-decrement" icon={faArrowDown} style={iconStyle}/>
+              <FontAwesomeIcon id="break-decrement" icon={faArrowDown} style={iconStyle} onClick={this.breakDec}/>
               <span id="break-length">{this.state.break}</span>
-              <FontAwesomeIcon id="break-increment" icon={faArrowUp} style={iconStyle}/> 
+              <FontAwesomeIcon id="break-increment" icon={faArrowUp} style={iconStyle} onClick={this.breakInc}/> 
             </div>
             <div className="length">
               <p id="session-label">Session Length</p>
-              <FontAwesomeIcon id="session-decrement" icon={faArrowDown} style={iconStyle}/>
+              <FontAwesomeIcon id="session-decrement" icon={faArrowDown} style={iconStyle} onClick={this.sessionDec}/>
               <span id="session-length">{this.state.session}</span>
-              <FontAwesomeIcon id="session-increment" icon={faArrowUp} style={iconStyle}/> 
+              <FontAwesomeIcon id="session-increment" icon={faArrowUp} style={iconStyle} onClick={this.sessionInc}/> 
             </div>
           </div>
           <div className="timer-wrap">

@@ -1,7 +1,9 @@
 import React from 'react';
 import './App.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowDown, faArrowUp, faPlay, faPause, faSync } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDown, faArrowUp, faSync } from '@fortawesome/free-solid-svg-icons';
+import Moment from 'react-moment';
+import iconPP from './images/iconPlayPause.png';
 
 class App extends React.Component {
   constructor(props) {
@@ -9,26 +11,43 @@ class App extends React.Component {
     this.state = {
       break: 5,
       session: 25,
-      time: 25,
-      isOn: false
+      startTime: 25,
+      time: 25 * 60 * 1000,
+      current: Date.now(),
+      isOn: false,
+      isPlay: false
     }
     this.startTimer = this.startTimer.bind(this);
-    this.stopTimer = this.stopTimer.bind(this);
   }
 
   startTimer() {
     this.setState({
-      isOn: true,
-      time: this.state.time,
-      session: Date.now() - this.state.time
-    });
-    this.timer = setInterval( () => this.setState({
-      time: Date.now() - this.state.session
-    }), 1000);
-  }
-  stopTimer() {
-    this.setState({isOn: false});
-    clearInterval(this.timer);
+      current: Date.now(),
+      isPlay: !this.state.isPlay
+    })
+    
+    if (this.state.startTime === this.state.session) {
+      this.setState({
+        isOn: !this.state.isOn,
+        startTime: this.state.session * 60 * 1000
+      });
+    }
+
+    if (!this.state.isPlay) {
+      console.log('true: '+ this.state.isPlay);
+      this.timer = setInterval( () => {
+        this.setState({
+          time: Math.ceil( (this.state.startTime - (Date.now() - this.state.current) ) / 1000) * 1000
+        });
+        console.log(this.state.startTime * 60 * 1000 - (Date.now() - this.state.current));
+        console.log(Math.ceil( (this.state.startTime - (Date.now() - this.state.current) ) / 1000) * 1000);
+      }, 1000);
+    } else {
+      this.setState({
+        startTime: this.state.time
+      });
+      clearInterval(this.timer);
+    }
   }
   render() {
     const iconStyle = {
@@ -56,11 +75,10 @@ class App extends React.Component {
           </div>
           <div className="timer-wrap">
             <p id="timer-label">Session</p>
-            <span id="time-left">{this.state.time}</span>
+            <span id="time-left"><Moment format="mm:ss">{this.state.time}</Moment></span>
           </div>
           <div className="buttons">
-            <FontAwesomeIcon id="start_stop" icon={faPlay} style={iconStyle} onClick={this.startTimer}/>
-            <FontAwesomeIcon id="start_stop" icon={faPause} style={iconStyle} onClick={this.stopTimer}/>
+            <button id="start_stop" onClick={this.startTimer}><img src={iconPP} alt="play and pause button"/></button>
             <FontAwesomeIcon id="reset" icon={faSync} style={iconStyle}/>
           </div>
         </main>

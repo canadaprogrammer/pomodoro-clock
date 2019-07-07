@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'digital';
-  src: url('./fonts/digital-7.ttf');
+  src: url('./fonts/Digital_Dismay.otf');
 }
 
 .App {
@@ -28,4 +28,14 @@
 
 .buttons {
   margin-top: 2rem;
+}
+
+#start_stop {
+  border: none;
+  background-color: white;
+  vertical-align: middle;
+}
+
+#start_stop img {
+  width: 1.4rem;
 }

@@ -9,11 +9,16 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      break: 5,
-      session: 25,
-      startTime: 25,
-      time: 25 * 60 * 1000,
+      // break: 5,
+      // session: 25,
+      // startTime: 25,
+      // time: 25 * 60 * 1000,
+      break: 1,
+      session: 2,
+      startTime: 2,
+      time: 2 * 60 * 1000,
       current: Date.now(),
+      interval: '',
       on: 'session',
       isPlay: false
     }
@@ -22,8 +27,10 @@ class App extends React.Component {
     this.breakInc = this.breakInc.bind(this);
     this.sessionDec = this.sessionDec.bind(this);
     this.sessionInc = this.sessionInc.bind(this);
+    this.reset = this.reset.bind(this);
   }
   breakDec() {
+    if (this.state.isPlay) return;
     if (this.state.break > 1) {
       this.setState({
         break: this.state.break - 1
@@ -33,6 +40,7 @@ class App extends React.Component {
     }
   }
   breakInc() {
+    if (this.state.isPlay) return;
     if (this.state.break < 60) {
       this.setState({
         break: this.state.break + 1
@@ -42,6 +50,7 @@ class App extends React.Component {
     }
   }
   sessionDec() {
+    if (this.state.isPlay) return;
     if (this.state.session > 1) {
       this.setState({
         session: this.state.session - 1,
@@ -53,6 +62,7 @@ class App extends React.Component {
     }
   }
   sessionInc() {
+    if (this.state.isPlay) return;
     if (this.state.session < 60) {
       this.setState({
         session: this.state.session + 1,
@@ -66,6 +76,7 @@ class App extends React.Component {
 
   startTimer() {
     console.log('on: ' + this.state.on);
+    // need to move it to btn control
     this.setState({
       current: Date.now(),
       isPlay: !this.state.isPlay
@@ -75,39 +86,61 @@ class App extends React.Component {
         startTime: this.state.session * 60 * 1000
       });
     }
-
-    if (!this.state.isPlay) {
-      console.log('true: '+ this.state.isPlay);
-      this.timer = setInterval( () => {
-        this.setState({
-          time: Math.ceil( (this.state.startTime - (Date.now() - this.state.current) ) / 1000) * 1000
-        });
-        console.log(this.state.startTime * 60 * 1000 - (Date.now() - this.state.current));
-        console.log(Math.ceil( (this.state.startTime - (Date.now() - this.state.current) ) / 1000) * 1000);
-      }, 1000);
+    if (!this.state.interval) {
+      console.log('interval: '+ this.state.interval);
+      this.setState({
+        interval: setInterval( () => {
+          this.setState({
+            time: Math.ceil( (this.state.startTime - (Date.now() - this.state.current) ) / 1000) * 1000
+          });
+          console.log(this.state.startTime * 60 * 1000 - (Date.now() - this.state.current));
+          console.log(Math.ceil( (this.state.startTime - (Date.now() - this.state.current) ) / 1000) * 1000);
+        }, 1000)
+      });
     } else {
       this.setState({
-        startTime: this.state.time
+        startTime: this.state.time,
+        interval: clearInterval(this.state.interval)
       });
-      clearInterval(this.timer);
     }
   }
-
+  reset() {
+    this.setState({
+      interval: clearInterval(this.state.interval)
+    });
+    this.setState({
+      // break: 5,
+      // session: 25,
+      // startTime: 25,
+      // time: 25 * 60 * 1000,
+      break: 1,
+      session: 1,
+      startTime: 1,
+      time: 1 * 60 * 1000,
+      current: Date.now(),
+      interval: '',
+      on: 'session',
+      isPlay: false
+    });
+  }
   componentDidUpdate() {
-    if (this.state.time <= 0 && this.state.isPlay) {
-      console.log('times up');
-      if (this.state.on === 'session') {
-        this.setState({
-          on: 'break'
-        });
-        this.startTimer();
-      } else {
-        this.setState({
-          on: 'session'
-        });
-        this.startTimer();
-      }
-    }
+    // if (this.state.time <= 0 && this.state.isPlay) {
+    //   console.log('times up');
+    //   if (this.state.on === 'session') {
+    //     this.setState({
+    //       on: 'break',
+          
+    //     });
+    //     // need to modify code in order to change timer from session to break
+    //     this.startTimer();
+    //   } else {
+    //     this.setState({
+    //       on: 'session',
+
+    //     });
+    //     this.startTimer();
+    //   }
+    // }
   }
   render() {
     const iconStyle = {
@@ -139,7 +172,7 @@ class App extends React.Component {
           </div>
           <div className="buttons">
             <button id="start_stop" onClick={this.startTimer}><img src={iconPP} alt="play and pause button"/></button>
-            <FontAwesomeIcon id="reset" icon={faSync} style={iconStyle}/>
+            <FontAwesomeIcon id="reset" icon={faSync} style={iconStyle} onClick={this.reset}/>
           </div>
         </main>
       </div>

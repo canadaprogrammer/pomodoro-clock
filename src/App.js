@@ -19,9 +19,11 @@ class App extends React.Component {
       time: 2 * 60 * 1000,
       current: Date.now(),
       interval: '',
-      on: 'session',
-      isPlay: false
+      on: 'Session',
+      isPlay: false,
+      played: false
     }
+    this.start = this.start.bind(this);
     this.startTimer = this.startTimer.bind(this);
     this.breakDec = this.breakDec.bind(this);
     this.breakInc = this.breakInc.bind(this);
@@ -55,7 +57,8 @@ class App extends React.Component {
       this.setState({
         session: this.state.session - 1,
         startTime: this.state.session - 1,
-        time: (this.state.session - 1) * 60 * 1000
+        time: (this.state.session - 1) * 60 * 1000,
+        played: false
       });
     } else {
       console.log('Session is allowed greater than 0 minute');
@@ -67,23 +70,31 @@ class App extends React.Component {
       this.setState({
         session: this.state.session + 1,
         startTime: this.state.session + 1,
-        time: (this.state.session + 1) * 60 * 1000
+        time: (this.state.session + 1) * 60 * 1000,
+        played: false
       });
     } else {
       console.log('Session is allowed less than an hour');
     }
   }
+  start(_status) {
+    console.log(this.state[_status.toLowerCase()]);
+    console.log(this.state.isPlay);
 
-  startTimer() {
-    console.log('on: ' + this.state.on);
-    // need to move it to btn control
     this.setState({
-      current: Date.now(),
-      isPlay: !this.state.isPlay
+      current: Date.now()
     });
-    if (this.state.startTime === this.state.session) {
+
+    if (this.state.on !== _status) {
       this.setState({
-        startTime: this.state.session * 60 * 1000
+        on: _status,
+        interval: clearInterval(this.state.interval)
+      });
+    }
+
+    if (this.state.startTime <= 0 || this.state.startTime === this.state[_status.toLowerCase()]) {
+      this.setState({
+        startTime: this.state[_status.toLowerCase()] * 60 * 1000
       });
     }
     if (!this.state.interval) {
@@ -104,10 +115,15 @@ class App extends React.Component {
       });
     }
   }
-  reset() {
+  startTimer() {
+    console.log('on: ' + this.state.on);
+    // need to move it to btn control
     this.setState({
-      interval: clearInterval(this.state.interval)
+      isPlay: !this.state.isPlay
     });
+    this.start(this.state.on);
+  }
+  reset() {
     this.setState({
       // break: 5,
       // session: 25,
@@ -118,29 +134,34 @@ class App extends React.Component {
       startTime: 1,
       time: 1 * 60 * 1000,
       current: Date.now(),
-      interval: '',
-      on: 'session',
-      isPlay: false
+      interval: clearInterval(this.state.interval),
+      on: 'Session',
+      isPlay: false,
+      played: false
     });
   }
   componentDidUpdate() {
-    // if (this.state.time <= 0 && this.state.isPlay) {
-    //   console.log('times up');
-    //   if (this.state.on === 'session') {
-    //     this.setState({
-    //       on: 'break',
-          
-    //     });
-    //     // need to modify code in order to change timer from session to break
-    //     this.startTimer();
-    //   } else {
-    //     this.setState({
-    //       on: 'session',
+    if (this.state.time <= 0 && this.state.isPlay) {
+      console.log('times up ' + this.state.on);
 
-    //     });
-    //     this.startTimer();
-    //   }
-    // }
+      // error: Maximum update depth exceeded.
+      if (this.state.on === 'Session') {
+        // this.setState({
+        //   on: 'Break'
+        // });
+        this.start('Break');
+      } else {
+        // this.setState({
+        //   on: 'session'
+        // });
+        this.start('Session');
+      }
+      // this.setState({
+      //   interval: clearInterval(this.state.interval)
+      // });
+      console.log(this.state.on);
+      // this.start(this.state.on);
+    }
   }
   render() {
     const iconStyle = {

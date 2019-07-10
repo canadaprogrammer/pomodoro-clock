@@ -9,21 +9,16 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // break: 5,
-      // session: 25,
-      // startTime: 25,
-      // time: 25 * 60 * 1000,
-      break: 1,
-      session: 2,
-      startTime: 2,
-      time: 2 * 60 * 1000,
+      break: 5,
+      session: 25,
+      startTime: 25 * 60 * 1000,
+      time: 25 * 60 * 1000,
       current: Date.now(),
       interval: '',
-      on: 'Session',
+      on: 'session',
       isPlay: false,
       played: false
     }
-    this.start = this.start.bind(this);
     this.startTimer = this.startTimer.bind(this);
     this.breakDec = this.breakDec.bind(this);
     this.breakInc = this.breakInc.bind(this);
@@ -56,7 +51,7 @@ class App extends React.Component {
     if (this.state.session > 1) {
       this.setState({
         session: this.state.session - 1,
-        startTime: this.state.session - 1,
+        startTime: (this.state.session - 1) * 60 * 1000,
         time: (this.state.session - 1) * 60 * 1000,
         played: false
       });
@@ -69,7 +64,7 @@ class App extends React.Component {
     if (this.state.session < 60) {
       this.setState({
         session: this.state.session + 1,
-        startTime: this.state.session + 1,
+        startTime: (this.state.session + 1) * 60 * 1000,
         time: (this.state.session + 1) * 60 * 1000,
         played: false
       });
@@ -77,43 +72,15 @@ class App extends React.Component {
       console.log('Session is allowed less than an hour');
     }
   }
-  start(_status) {
-    console.log(this.state[_status.toLowerCase()]);
-    console.log(this.state.isPlay);
-
+  changeStatus() {
+    let status = this.state.on === 'session' ? 'break' : 'session';
+    console.log('status: ' + status);
     this.setState({
-      current: Date.now()
+      current: Date.now(),
+      on: status,
+      startTime: this.state[status] * 60 * 1000
     });
-
-    if (this.state.on !== _status) {
-      this.setState({
-        on: _status,
-        interval: clearInterval(this.state.interval)
-      });
-    }
-
-    if (this.state.startTime <= 0 || this.state.startTime === this.state[_status.toLowerCase()]) {
-      this.setState({
-        startTime: this.state[_status.toLowerCase()] * 60 * 1000
-      });
-    }
-    if (!this.state.interval) {
-      console.log('interval: '+ this.state.interval);
-      this.setState({
-        interval: setInterval( () => {
-          this.setState({
-            time: Math.ceil( (this.state.startTime - (Date.now() - this.state.current) ) / 1000) * 1000
-          });
-          console.log(this.state.startTime * 60 * 1000 - (Date.now() - this.state.current));
-          console.log(Math.ceil( (this.state.startTime - (Date.now() - this.state.current) ) / 1000) * 1000);
-        }, 1000)
-      });
-    } else {
-      this.setState({
-        startTime: this.state.time,
-        interval: clearInterval(this.state.interval)
-      });
-    }
+    console.log('startTime: ' + this.state.startTime);
   }
   startTimer() {
     console.log('on: ' + this.state.on);
@@ -121,47 +88,54 @@ class App extends React.Component {
     this.setState({
       isPlay: !this.state.isPlay
     });
-    this.start(this.state.on);
+    console.log(this.state.isPlay);
+
+    this.setState({
+      current: Date.now()
+    });
+
+    console.log(this.state.current);
+    if (!this.state.isPlay) {
+      // set interval
+      this.setState({
+        interval: setInterval( () => {
+          // check time is greater than 0
+          // // if greater, keep going
+          // // if less, change status
+          if (this.state.time <= 0) {
+            this.changeStatus();
+            console.log('startTime2: ' + this.state.startTime);
+            this.setState({
+              time: Math.ceil( (this.state.startTime - (Date.now() - this.state.current) ) / 1000) * 1000
+            });
+          } else {
+            this.setState({
+              time: Math.ceil( (this.state.startTime - (Date.now() - this.state.current) ) / 1000) * 1000
+            });
+          }
+        }, 1000)
+      })
+    } else {
+      // clear interval
+      // save startTime
+      this.setState({
+        startTime: this.state.time,
+        interval: clearInterval(this.state.interval)
+      });
+    }
   }
   reset() {
     this.setState({
-      // break: 5,
-      // session: 25,
-      // startTime: 25,
-      // time: 25 * 60 * 1000,
-      break: 1,
-      session: 1,
-      startTime: 1,
-      time: 1 * 60 * 1000,
+      break: 5,
+      session: 25,
+      startTime: 25 * 60 * 1000,
+      time: 25 * 60 * 1000,
       current: Date.now(),
       interval: clearInterval(this.state.interval),
-      on: 'Session',
+      on: 'session',
       isPlay: false,
       played: false
     });
-  }
-  componentDidUpdate() {
-    if (this.state.time <= 0 && this.state.isPlay) {
-      console.log('times up ' + this.state.on);
-
-      // error: Maximum update depth exceeded.
-      if (this.state.on === 'Session') {
-        // this.setState({
-        //   on: 'Break'
-        // });
-        this.start('Break');
-      } else {
-        // this.setState({
-        //   on: 'session'
-        // });
-        this.start('Session');
-      }
-      // this.setState({
-      //   interval: clearInterval(this.state.interval)
-      // });
-      console.log(this.state.on);
-      // this.start(this.state.on);
-    }
   }
   render() {
     const iconStyle = {
@@ -188,7 +162,7 @@ class App extends React.Component {
             </div>
           </div>
           <div className="timer-wrap">
-            <p id="timer-label">Session</p>
+            <p id="timer-label">{this.state.on.charAt(0).toUpperCase() + this.state.on.slice(1)}</p>
             <span id="time-left"><Moment format="mm:ss">{this.state.time}</Moment></span>
           </div>
           <div className="buttons">

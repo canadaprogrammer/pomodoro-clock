@@ -103,6 +103,7 @@ class App extends React.Component {
           // // if greater, keep going
           // // if less, change status
           if (this.state.time <= 0) {
+            document.querySelector('audio').play();
             this.changeStatus();
             console.log('startTime2: ' + this.state.startTime);
             this.setState({
@@ -170,6 +171,7 @@ class App extends React.Component {
             <FontAwesomeIcon id="reset" icon={faSync} style={iconStyle} onClick={this.reset}/>
           </div>
         </main>
+        <audio id="beep" ref="beep" src="https://goo.gl/65cBl1" />
       </div>
     );
   }

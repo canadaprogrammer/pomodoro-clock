@@ -102,18 +102,24 @@ class App extends React.Component {
           // check time is greater than 0
           // // if greater, keep going
           // // if less, change status
-          if (this.state.time <= 0) {
+          if (this.state.time === 1000) {
             document.querySelector('audio').play();
+          }
+          if (this.state.time < 1000) {
             this.changeStatus();
             console.log('startTime2: ' + this.state.startTime);
             this.setState({
               time: Math.ceil( (this.state.startTime - (Date.now() - this.state.current) ) / 1000) * 1000
+              // time:this.state.startTime - (Date.now() - this.state.current)
             });
           } else {
             this.setState({
               time: Math.ceil( (this.state.startTime - (Date.now() - this.state.current) ) / 1000) * 1000
+              // time: this.state.startTime - (Date.now() - this.state.current)
             });
           }
+          
+          console.log(this.state.time);
         }, 1000)
       })
     } else {

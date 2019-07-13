@@ -11,13 +11,10 @@ class App extends React.Component {
     this.state = {
       break: 5,
       session: 25,
-      startTime: 25 * 60 * 1000,
       time: 25 * 60 * 1000,
-      current: Date.now(),
       interval: '',
       on: 'session',
       isPlay: false,
-      played: false
     }
     this.startTimer = this.startTimer.bind(this);
     this.breakDec = this.breakDec.bind(this);
@@ -51,9 +48,7 @@ class App extends React.Component {
     if (this.state.session > 1) {
       this.setState({
         session: this.state.session - 1,
-        startTime: (this.state.session - 1) * 60 * 1000,
         time: (this.state.session - 1) * 60 * 1000,
-        played: false
       });
     } else {
       console.log('Session is allowed greater than 0 minute');
@@ -64,9 +59,7 @@ class App extends React.Component {
     if (this.state.session < 60) {
       this.setState({
         session: this.state.session + 1,
-        startTime: (this.state.session + 1) * 60 * 1000,
         time: (this.state.session + 1) * 60 * 1000,
-        played: false
       });
     } else {
       console.log('Session is allowed less than an hour');
@@ -76,11 +69,9 @@ class App extends React.Component {
     let status = this.state.on === 'session' ? 'break' : 'session';
     console.log('status: ' + status);
     this.setState({
-      current: Date.now(),
       on: status,
-      startTime: this.state[status] * 60 * 1000
+      time: this.state[status] * 60 * 1000
     });
-    console.log('startTime: ' + this.state.startTime);
   }
   startTimer() {
     console.log('on: ' + this.state.on);
@@ -90,11 +81,8 @@ class App extends React.Component {
     });
     console.log(this.state.isPlay);
 
-    this.setState({
-      current: Date.now()
-    });
+    let interval = Date.now() - Date.now() + 1000;
 
-    console.log(this.state.current);
     if (!this.state.isPlay) {
       // set interval
       this.setState({
@@ -102,20 +90,12 @@ class App extends React.Component {
           // check time is greater than 0
           // // if greater, keep going
           // // if less, change status
-          if (this.state.time === 1000) {
+          if (this.state.time === 0) {
             document.querySelector('audio').play();
-          }
-          if (this.state.time < 1000) {
             this.changeStatus();
-            console.log('startTime2: ' + this.state.startTime);
-            this.setState({
-              time: Math.ceil( (this.state.startTime - (Date.now() - this.state.current) ) / 1000) * 1000
-              // time:this.state.startTime - (Date.now() - this.state.current)
-            });
           } else {
             this.setState({
-              time: Math.ceil( (this.state.startTime - (Date.now() - this.state.current) ) / 1000) * 1000
-              // time: this.state.startTime - (Date.now() - this.state.current)
+              time: Math.ceil( (this.state.time - interval ) / 1000 ) * 1000
             });
           }
           
@@ -126,7 +106,6 @@ class App extends React.Component {
       // clear interval
       // save startTime
       this.setState({
-        startTime: this.state.time,
         interval: clearInterval(this.state.interval)
       });
     }
@@ -135,13 +114,10 @@ class App extends React.Component {
     this.setState({
       break: 5,
       session: 25,
-      startTime: 25 * 60 * 1000,
       time: 25 * 60 * 1000,
-      current: Date.now(),
       interval: clearInterval(this.state.interval),
       on: 'session',
       isPlay: false,
-      played: false
     });
   }
   render() {

@@ -14,7 +14,8 @@ class App extends React.Component {
       time: 25 * 60,
       interval: '',
       on: 'session',
-      isPlay: false
+      isPlay: false,
+      warn: {color: "hsl(160, 100%, 40%)"}
     }
     this.startTimer = this.startTimer.bind(this);
     this.breakDec = this.breakDec.bind(this);
@@ -81,7 +82,8 @@ class App extends React.Component {
     console.log('status: ' + status);
     this.setState({
       on: status,
-      time: this.state[status] * 60
+      time: this.state[status] * 60,
+      warn: {color: "hsl(160, 100%, 40%)"}
     });
   }
   startTimer() {
@@ -98,6 +100,11 @@ class App extends React.Component {
           // check time is greater than 0
           // // if greater, keep going
           // // if less, change status
+          if (this.state.time === 60) {
+            this.setState({
+              warn: {color: "hsl(0, 100%, 40%)"}
+            });
+          }
           if (this.state.time === 0) {
             this.changeStatus();
           } else {
@@ -122,7 +129,8 @@ class App extends React.Component {
       time: 25 * 60,
       interval: clearInterval(this.state.interval),
       on: 'session',
-      isPlay: false
+      isPlay: false,
+      warn: {color: "hsl(160, 100%, 40%)"}
     });
     this.audioBeep.pause();
     this.audioBeep.currentTime = 0;
@@ -167,7 +175,7 @@ class App extends React.Component {
                 <button id="session-increment" onClick={this.sessionInc}><FontAwesomeIcon icon={faArrowUp} style={iconStyle}/></button>
               </div>
             </div>
-            <div className="timer-wrap">
+            <div className="timer-wrap" style={this.state.warn}>
               <div id="timer-label">{this.state.on.charAt(0).toUpperCase() + this.state.on.slice(1)}</div>
               <div id="time-left">{this.display()}</div>
             </div>

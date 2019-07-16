@@ -11,7 +11,7 @@
   color: hsl(160, 100%, 40%);
 }
 
-.container, #start_stop {
+.container, button, #start_stop {
   background-color: hsl(160, 100%, 10%);
 }
 
@@ -41,6 +41,16 @@ header h1 {
     width: 50%;
     display: inline-block;
   }
+}
+
+button {
+  border: none;
+  color: hsl(160, 100%, 40%);
+}
+
+#break-length, #session-length {
+  display: inline-block;
+  width: 3rem;
 }
 
 .length, #timer-label  {

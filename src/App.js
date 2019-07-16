@@ -3,7 +3,7 @@ import './App.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown, faArrowUp, faSync } from '@fortawesome/free-solid-svg-icons';
 import Moment from 'react-moment';
-import iconPP from './images/iconPlayPause.png';
+import iconPP from './images/iconplaypause1.png';
 
 class App extends React.Component {
   constructor(props) {
@@ -35,7 +35,7 @@ class App extends React.Component {
   }
   breakInc() {
     if (this.state.isPlay) return;
-    if (this.state.break < 60) {
+    if (this.state.break < 59) {
       this.setState({
         break: this.state.break + 1
       });
@@ -56,7 +56,7 @@ class App extends React.Component {
   }
   sessionInc() {
     if (this.state.isPlay) return;
-    if (this.state.session < 60) {
+    if (this.state.session < 59) {
       this.setState({
         session: this.state.session + 1,
         time: (this.state.session + 1) * 60 * 1000,
@@ -91,7 +91,6 @@ class App extends React.Component {
           // // if greater, keep going
           // // if less, change status
           if (this.state.time === 0) {
-            document.querySelector('audio').play();
             this.changeStatus();
           } else {
             this.setState({
@@ -120,40 +119,51 @@ class App extends React.Component {
       isPlay: false,
     });
   }
+
+  componentDidUpdate() {
+    if (this.state.time === 0 ) {
+      document.querySelector('audio').play();
+    }
+  }
   render() {
     const iconStyle = {
       margin: "0 0.5rem"
     }
     return (
-      <div className="App">
-        <header>
-          <h1>Pomodoro Clock</h1>
-        </header>
-        <main>
-          <div className="length-wrap">
-            <div className="length">
-              <p id="break-label">Break Length</p>
-              <FontAwesomeIcon id="break-decrement" icon={faArrowDown} style={iconStyle} onClick={this.breakDec}/>
-              <span id="break-length">{this.state.break}</span>
-              <FontAwesomeIcon id="break-increment" icon={faArrowUp} style={iconStyle} onClick={this.breakInc}/> 
+      <div className="container">
+        <div className="App">
+          <header>
+            <h1>Pomodoro Clock</h1>
+          </header>
+          <main>
+            <div className="length-wrap">
+              <div className="length">
+                <p id="break-label">Break Length</p>
+                <FontAwesomeIcon id="break-decrement" icon={faArrowDown} style={iconStyle} onClick={this.breakDec}/>
+                <span id="break-length">{this.state.break}</span>
+                <FontAwesomeIcon id="break-increment" icon={faArrowUp} style={iconStyle} onClick={this.breakInc}/> 
+              </div>
+              <div className="length">
+                <p id="session-label">Session Length</p>
+                <FontAwesomeIcon id="session-decrement" icon={faArrowDown} style={iconStyle} onClick={this.sessionDec}/>
+                <span id="session-length">{this.state.session}</span>
+                <FontAwesomeIcon id="session-increment" icon={faArrowUp} style={iconStyle} onClick={this.sessionInc}/> 
+              </div>
             </div>
-            <div className="length">
-              <p id="session-label">Session Length</p>
-              <FontAwesomeIcon id="session-decrement" icon={faArrowDown} style={iconStyle} onClick={this.sessionDec}/>
-              <span id="session-length">{this.state.session}</span>
-              <FontAwesomeIcon id="session-increment" icon={faArrowUp} style={iconStyle} onClick={this.sessionInc}/> 
+            <div className="timer-wrap">
+              <p id="timer-label">{this.state.on.charAt(0).toUpperCase() + this.state.on.slice(1)}</p>
+              <Moment id="time-left" format="mm:ss">{this.state.time}</Moment>
             </div>
-          </div>
-          <div className="timer-wrap">
-            <p id="timer-label">{this.state.on.charAt(0).toUpperCase() + this.state.on.slice(1)}</p>
-            <span id="time-left"><Moment format="mm:ss">{this.state.time}</Moment></span>
-          </div>
-          <div className="buttons">
-            <button id="start_stop" onClick={this.startTimer}><img src={iconPP} alt="play and pause button"/></button>
-            <FontAwesomeIcon id="reset" icon={faSync} style={iconStyle} onClick={this.reset}/>
-          </div>
-        </main>
-        <audio id="beep" ref="beep" src="https://goo.gl/65cBl1" />
+            <div className="buttons">
+              <button id="start_stop" onClick={this.startTimer}><img src={iconPP} alt="play and pause button"/></button>
+              <FontAwesomeIcon id="reset" icon={faSync} style={iconStyle} onClick={this.reset}/>
+            </div>
+          </main>
+          <footer>
+            <p>Designed and Coded by <a rel="noopener noreferrer" href="https://developerjinpark.github.io/" target="_blank">Jin Park</a></p>
+          </footer>
+          <audio id="beep" ref="beep" src="https://goo.gl/65cBl1" />
+        </div>
       </div>
     );
   }

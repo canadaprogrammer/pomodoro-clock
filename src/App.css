@@ -3,6 +3,18 @@
   src: url('./fonts/Digital_Dismay.otf');
 }
 
+.container {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  color: hsl(160, 100%, 40%);
+}
+
+.container, #start_stop {
+  background-color: hsl(160, 100%, 10%);
+}
+
 .App {
   text-align: center;
   width: 30rem;
@@ -11,13 +23,36 @@
   font-weight: bold;
 }
 
+header {
+  margin-bottom: 2rem;
+}
+
+header h1 {
+  font-size: 2.5rem;
+}
+
 .length {
-  width: 50%;
-  display: inline-block;
+  width: 100vw;
+  display: block;
+}
+
+@media (min-width: 400px) {
+  .length {
+    width: 50%;
+    display: inline-block;
+  }
 }
 
 .length, #timer-label  {
   font-size: 1.5rem;
+}
+
+.timer-wrap {
+  margin: 1rem auto;
+  padding: 1rem;
+  width: 12rem;
+  border: hsl(160, 100%, 15%) solid 2px;
+  border-radius: 10px;
 }
 
 #time-left {
@@ -26,16 +61,21 @@
   font-weight: normal;
 }
 
-.buttons {
-  margin-top: 2rem;
-}
-
 #start_stop {
   border: none;
-  background-color: white;
   vertical-align: middle;
 }
 
 #start_stop img {
   width: 1.4rem;
+}
+
+footer {
+  margin-top: 2rem;
+  color: hsl(182, 100%, 25%);
+}
+
+footer a {
+  text-decoration: none;
+  color: hsl(182, 100%, 50%);
 }

@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/pomodoro-clock/static/css/main.82b9cced.chunk.css",
+    "main.js": "/pomodoro-clock/static/js/main.71f900ad.chunk.js",
+    "main.js.map": "/pomodoro-clock/static/js/main.71f900ad.chunk.js.map",
+    "runtime~main.js": "/pomodoro-clock/static/js/runtime~main.647dc629.js",
+    "runtime~main.js.map": "/pomodoro-clock/static/js/runtime~main.647dc629.js.map",
+    "static/js/2.871bfc38.chunk.js": "/pomodoro-clock/static/js/2.871bfc38.chunk.js",
+    "static/js/2.871bfc38.chunk.js.map": "/pomodoro-clock/static/js/2.871bfc38.chunk.js.map",
+    "index.html": "/pomodoro-clock/index.html",
+    "precache-manifest.7580cde42efbe69e09a55d6f46aec204.js": "/pomodoro-clock/precache-manifest.7580cde42efbe69e09a55d6f46aec204.js",
+    "service-worker.js": "/pomodoro-clock/service-worker.js",
+    "static/css/main.82b9cced.chunk.css.map": "/pomodoro-clock/static/css/main.82b9cced.chunk.css.map",
+    "static/media/App.css": "/pomodoro-clock/static/media/Digital_Dismay.582cac29.otf",
+    "static/media/iconplaypause1.png": "/pomodoro-clock/static/media/iconplaypause1.b00a7e78.png"
+  }
+}

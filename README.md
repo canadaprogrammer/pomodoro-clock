@@ -63,3 +63,87 @@ You can use any mix of HTML, JavaScript, CSS, Bootstrap, SASS, React, Redux, and
 27. The audio element with id="beep" must be 1 second or longer.
 
 28. The audio element with id of beep must stop playing and be rewound to the beginning when the element with the id of reset is clicked.
+
+## Notes
+
+- To display time
+
+  Firstly, I used react-moment to display time. However, it is not suitable for countdown because of setting 60 minutes and accuracy.
+  
+  So, just used a formula
+
+  ```jsx
+  display() {
+    let mm = Math.floor(this.state.time / 60);
+    let ss = this.state.time - (mm * 60);
+    const format = t => {
+      return ('0' + t).slice(-2);
+    }
+    return format(mm) + ':' + format(ss);
+  }
+  ```
+
+- To do countdown
+
+  ```jsx
+  // when clicking a button of start
+  startTimer() {
+    // to change between play and pause
+    this.setState({
+      isPlay: !this.state.isPlay
+    });
+
+    if (!this.state.isPlay) {
+      // set interval
+      this.setState({
+        interval: setInterval( () => {
+          /* check time is greater than 0
+           * if greater, keep going
+           * if less, change status
+           */
+          if (this.state.time === 0) {
+            // Use a function to use a updated value
+            this.changeStatus();
+          } else {
+            // countdown
+            this.setState({
+              time: this.state.time - 1
+            });
+          }
+        }, 1000)
+      })
+    } else {
+      // changing length
+      // clear interval
+      this.setState({
+        interval: clearInterval(this.state.interval)
+      });
+    }
+  }
+  changeStatus() {
+    let status = this.state.on === 'session' ? 'break' : 'session';
+    console.log('status: ' + status);
+    this.setState({
+      on: status,
+      time: this.state[status] * 60,
+      warn: {color: "hsl(160, 100%, 40%)"}
+    });
+  }
+  ```
+
+- To play audio
+
+  ```jsx
+  componentDidUpdate() {
+    if (this.state.time === 0 ) {
+      this.audioBeep.play();
+    }
+  }
+
+  render() {
+    return (
+      // ...
+      <audio id="beep" ref={(audio) => {this.audioBeep = audio;}} src="https://goo.gl/65cBl1" />
+    )
+  }
+  ```
